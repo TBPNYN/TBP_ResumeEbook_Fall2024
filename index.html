@@ -77,15 +77,13 @@
   <a href="#" class="w3-bar-item w3-button">Link 4</a>
 </nav>
 
-
-
 <!-- Header -->
 <header class="w3-container w3-indigo w3-padding" id="myHeader">
   <i onclick="w3_open()" class="fa fa-bars w3-xlarge w3-button w3-theme"></i> 
   <div class="w3-center">
   <img src="assets/logo.png" alt="TBP Logo" class="circle-image">
   <h3>Tau Beta Pi</h3>
-  <h1 class="w3-xxxlarge w3-animate-bottom">CV Book Thing(Tim forgot what its called)</h1>
+  <h1 class="w3-xxxlarge w3-animate-bottom">Resume E-Book</h1>
   </div>
 </header>
 
@@ -95,21 +93,17 @@
       <h2>John Doe</h2>
       <p>Welcome to my profile! I am passionate about web development and love sharing ideas on social media.</p>
       <div class="social-links">
-        <a href="https://facebook.com" class="w3-btn w3-theme-light" target="_blank">
-          <i class="fab fa-graduation-cap"></i> UB Site
+        <a href="https://www.tbp-ny.nu/" class="w3-btn w3-theme-light" target="_blank">
+          <i class="fa fa-linkedin-square"></i> LinkedIn
         </a>
-        <a href="https://twitter.com" class="twitter" target="_blank">
-          <i class="fab fa-twitter"></i> Twitter
-        </a>
-        <a href="https://instagram.com" class="instagram" target="_blank">
-          <i class="fab fa-instagram"></i> Instagram
-        </a>
-        <a href="https://linkedin.com" class="linkedin" target="_blank">
-          <i class="fab fa-linkedin"></i> LinkedIn
+        <a href="student_data/CompEng_TimothyScholtz - Timothy Scholtz.pdf" class="w3-btn w3-theme-light" target="_blank">
+          <i class="fa fa-address-card"></i> CV
         </a>
       </div>
     </div>
   </div>
+
+  <div id="profiles-container"></div>
 
 <!-- Footer -->
 <footer class="w3-container w3-indigo w3-padding-16">
@@ -130,11 +124,90 @@
       <i class="fa fa-instagram"></i> Instagram
     </a>
   </p>
-  
 </footer>
 
 <!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
 <script>
+
+    // Function to create a profile container
+    function createProfileContainer(profile) {
+      const container = document.createElement('div');
+      container.className = 'container';
+
+      const img = document.createElement('img');
+      img.src = profile.image;
+      img.alt = `${profile.name}'s Profile Image`;
+
+      const content = document.createElement('div');
+      content.className = 'content';
+
+      const h2 = document.createElement('h2');
+      h2.textContent = profile.name;
+
+      const p = document.createElement('p');
+      p.textContent = profile.description;
+
+      const socialLinks = document.createElement('div');
+      socialLinks.className = 'social-links';
+
+      const linkedinLink = document.createElement('a');
+      linkedinLink.href = profile.linkedin;
+      linkedinLink.className = 'linkedin';
+      linkedinLink.target = '_blank';
+      linkedinLink.innerHTML = '<i class="fab fa-linkedin"></i> LinkedIn';
+
+      const cvLink = document.createElement('a');
+      cvLink.href = profile.cv;
+      cvLink.className = 'cv';
+      cvLink.target = '_blank';
+      cvLink.innerHTML = '<i class="fas fa-file-alt"></i> CV';
+
+      socialLinks.appendChild(linkedinLink);
+      socialLinks.appendChild(cvLink);
+
+      content.appendChild(h2);
+      content.appendChild(p);
+      content.appendChild(socialLinks);
+
+      container.appendChild(img);
+      container.appendChild(content);
+
+      return container;
+    }
+    const fs = require('fs');
+    const path = require('path');
+    // Function to fetch profiles and display them
+    async function loadProfiles() {
+      try {
+
+       fs.readdir('student_data', (err, items) => {
+        if (err) {
+          console.error('Error reading directory:', err);
+        } else {
+          // Filter only folders
+          const folders = items.filter(item => {
+            return fs.statSync(path.join(dirPath, item)).isDirectory();
+          });          
+          console.log('Folders:', folders);
+         
+        }
+      });
+
+        const profilesContainer = document.getElementById('profiles-container');
+        profiles.forEach(profile => {
+          const profileContainer = createProfileContainer(profile);
+          profilesContainer.appendChild(profileContainer);
+        });
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
+      }
+    }
+
+    // Load profiles on page load
+    window.addEventListener('DOMContentLoaded', loadProfiles);
+
+
+
 // Side navigation
 function w3_open() {
   var x = document.getElementById("mySidebar");
