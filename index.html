@@ -135,30 +135,30 @@
       container.className = 'container';
 
       const img = document.createElement('img');
-      img.src = profile.image;
-      img.alt = `${profile.name}'s Profile Image`;
+      img.src = `student_data/image/${profile[1]}.png`;
+      img.alt = `${profile[0]}'s Profile Image`;
 
       const content = document.createElement('div');
       content.className = 'content';
 
       const h2 = document.createElement('h2');
-      h2.textContent = profile.name;
+      h2.textContent = profile[0];
 
       const p = document.createElement('p');
-      p.textContent = profile.description;
+      p.textContent = "Do we want to have short desrciptions? I think it could be cool";
 
       const socialLinks = document.createElement('div');
       socialLinks.className = 'social-links';
 
       const linkedinLink = document.createElement('a');
-      linkedinLink.href = profile.linkedin;
+      linkedinLink.href = profile[2];
       linkedinLink.className = 'linkedin';
       linkedinLink.target = '_blank';
       linkedinLink.innerHTML = '<i class="fab fa-linkedin"></i> LinkedIn';
 
       const cvLink = document.createElement('a');
       cvLink.href = profile.cv;
-      cvLink.className = 'cv';
+      cvLink.className = `student_data/cv/${profile[1]}.pdf`;
       cvLink.target = '_blank';
       cvLink.innerHTML = '<i class="fas fa-file-alt"></i> CV';
 
@@ -174,39 +174,40 @@
 
       return container;
     }
-    const fs = require('fs');
-    const path = require('path');
+    
     // Function to fetch profiles and display them
     async function loadProfiles() {
-      try {
-
-       fs.readdir('student_data', (err, items) => {
-        if (err) {
-          console.error('Error reading directory:', err);
-        } else {
-          // Filter only folders
-          const folders = items.filter(item => {
-            return fs.statSync(path.join(dirPath, item)).isDirectory();
-          });          
-          console.log('Folders:', folders);
-         
-        }
-      });
-
-        const profilesContainer = document.getElementById('profiles-container');
-        profiles.forEach(profile => {
-          const profileContainer = createProfileContainer(profile);
-          profilesContainer.appendChild(profileContainer);
-        });
-      } catch (error) {
-        console.error('Error fetching profiles:', error);
+      const file = "student_data/student_data.csv"
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          const text = e.target.result;
+          const students =processCSV(text);
+      };
+      for (const student of students) {
+        createProfileContainer(student)
       }
     }
 
+    function processCSV(csvText) {
+    // Split the CSV text by lines
+    const lines = csvText.split('\n');
+    
+    // Skip the header (first line)
+    const dataLines = lines.slice(1);
+    
+    // Process each line
+    const dataArrays = dataLines.map(line => {
+        // Split the line by commas to get the array of strings
+        return line.split(',').map(item => item.trim());
+    });
+
+    // Remove any empty arrays that might result from extra newlines
+    const filteredData = dataArrays.filter(row => row.length > 1);
+  
+    return filteredData;
+}
     // Load profiles on page load
     window.addEventListener('DOMContentLoaded', loadProfiles);
-
-
 
 // Side navigation
 function w3_open() {
