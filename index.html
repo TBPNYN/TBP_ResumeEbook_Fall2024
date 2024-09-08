@@ -154,13 +154,13 @@
       linkedinLink.href = profile[2];
       linkedinLink.className = 'w3-btn w3-theme-light';
       linkedinLink.target = '_blank';
-      linkedinLink.innerHTML = '<i class="fab fa-linkedin"></i> LinkedIn';
+      linkedinLink.innerHTML = '<i class="fa fa-linkedin"></i> LinkedIn';
 
       const cvLink = document.createElement('a');
       cvLink.href =`student_data/cv/${profile[1]}.pdf`;
       cvLink.className = 'w3-btn w3-theme-light';
       cvLink.target = '_blank';
-      cvLink.innerHTML = '<i class="fas fa-file-alt"></i> CV';
+      cvLink.innerHTML = '<i class="fa fa-address-card"></i> CV';
 
       socialLinks.appendChild(linkedinLink);
       socialLinks.appendChild(cvLink);
