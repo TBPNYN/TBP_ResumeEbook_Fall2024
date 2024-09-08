@@ -177,14 +177,31 @@
     
     // Function to fetch profiles and display them
     async function loadProfiles() {
-      const file = "student_data/student_data.csv"
-      const reader = new FileReader();
-      reader.onload = function(e) {
-          const text = e.target.result;
-          const students =processCSV(text);
-      };
-      reader.readAsText(file);
+    const fileUrl = "student_data/student_data.csv";
+    
+    try {
+        // Fetch the CSV file
+        const response = await fetch(fileUrl);
+        
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        // Read the text from the response
+        const text = await response.text();
+        
+        // Process the CSV text
+        const students = processCSV(text);
+        
+        // Create profile containers for each student
+        for (const student of students) {
+            createProfileContainer(student);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
     }
+}
 
     function processCSV(csvText) {
     // Split the CSV text by lines
@@ -202,9 +219,7 @@
     // Remove any empty arrays that might result from extra newlines
     const filteredData = dataArrays.filter(row => row.length > 1);
   
-    for (const student of filteredData) {
-        createProfileContainer(student)
-      }
+    return filteredData;
 }
     // Load profiles on page load
     window.addEventListener('DOMContentLoaded', loadProfiles);
