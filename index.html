@@ -183,9 +183,7 @@
           const text = e.target.result;
           const students =processCSV(text);
       };
-      for (const student of students) {
-        createProfileContainer(student)
-      }
+      reader.readAsText(file);
     }
 
     function processCSV(csvText) {
@@ -204,7 +202,9 @@
     // Remove any empty arrays that might result from extra newlines
     const filteredData = dataArrays.filter(row => row.length > 1);
   
-    return filteredData;
+    for (const student of filteredData) {
+        createProfileContainer(student)
+      }
 }
     // Load profiles on page load
     window.addEventListener('DOMContentLoaded', loadProfiles);
