@@ -193,7 +193,7 @@
         
         // Process the CSV text
         const students = processCSV(text);
-        
+        const profilesContainer = document.getElementById('profiles-container');
         // Create profile containers for each student
         for (const student of students) {
             let studentProfile = createProfileContainer(student);
