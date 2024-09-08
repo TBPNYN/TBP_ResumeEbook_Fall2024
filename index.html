@@ -17,11 +17,19 @@
     .container {
       display: flex;
       align-items: center;
-      padding: 20px;
+      padding: 10px;
       background-color: #f4f4f4;
       border-radius: 8px;
       max-width: 800px;
       margin: 20px auto;
+    }
+
+    .circle-background {
+      display: inline-block;
+      background-color: white; /* White background */
+      border-radius: 50%; /* Makes it a circle */
+      padding: 10px; /* Adds space around the image */
+      margin: 20px;
     }
 
     .container img {
@@ -29,7 +37,7 @@
       height: 150px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 20px;
+     
     }
 
     .content {
@@ -81,27 +89,13 @@
 <header class="w3-container w3-indigo w3-padding" id="myHeader">
   <i onclick="w3_open()" class="fa fa-bars w3-xlarge w3-button w3-theme"></i> 
   <div class="w3-center">
-  <img src="assets/logo.png" alt="TBP Logo" class="circle-image">
+   <div class="circle-background">
+      <img src="assets/logo.png" alt="TBP Logo" class="circle-image">
+    </div>
   <h3>Tau Beta Pi</h3>
   <h1 class="w3-xxxlarge w3-animate-bottom">Resume E-Book</h1>
   </div>
 </header>
-
-<div class="container">
-    <img src="assets/logo.png" alt="Profile Image">
-    <div class="content">
-      <h2>John Doe</h2>
-      <p>Welcome to my profile! I am passionate about web development and love sharing ideas on social media.</p>
-      <div class="social-links">
-        <a href="https://www.tbp-ny.nu/" class="w3-btn w3-theme-light" target="_blank">
-          <i class="fa fa-linkedin-square"></i> LinkedIn
-        </a>
-        <a href="student_data/CompEng_TimothyScholtz - Timothy Scholtz.pdf" class="w3-btn w3-theme-light" target="_blank">
-          <i class="fa fa-address-card"></i> CV
-        </a>
-      </div>
-    </div>
-  </div>
 
   <div id="profiles-container"></div>
 
@@ -131,55 +125,84 @@
 
     // Function to create a profile container
     function createProfileContainer(profile) {
-      const container = document.createElement('div');
-      container.className = 'container';
+    const container = document.createElement('div');
+    container.className = 'container';
 
-      const img = document.createElement('img');
-      img.src = `student_data/image/${profile[1]}.png`;
-      img.alt = `${profile[0]}'s Profile Image`;
+    const imgWrapper = document.createElement('div');
+    imgWrapper.className = 'circle-background'; // CSS class for the white circle background
+    imgWrapper.style.marginBottom = '20px'; // Adds space between the image and text
 
-      const content = document.createElement('div');
-      content.className = 'content';
+    const img = document.createElement('img');
+    img.src = 'assets/logo.png'; // Default image (e.g., a placeholder image)
+    img.alt = `${profile[0]}'s Profile Image`;
+    img.className = 'circle-image'; // CSS class for making the image circular
 
-      const h2 = document.createElement('h2');
-      h2.textContent = profile[0];
+    // Check if the profile image exists
+    const imagePathPng = `student_data/image/${profile[1]}.png`;
+    fileExists(imagePathPng).then(exists => {
+        if (exists) {
+            img.src = imagePathPng; // If PNG image exists, use it
+        } else {
+            // If PNG doesn't exist, check for JPEG
+            const imagePathJpeg = `student_data/image/${profile[1]}.jpeg`;
+            fileExists(imagePathJpeg).then(exists => {
+                if (exists) {
+                    img.src = imagePathJpeg; // If JPEG image exists, use it
+                }
+            });
+        }
+    });
 
-      const p = document.createElement('p');
-      p.textContent = "Do we want to have short desrciptions? I think it could be cool";
+    imgWrapper.appendChild(img);
 
-      const socialLinks = document.createElement('div');
-      socialLinks.className = 'social-links';
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.style.marginTop = '20px'; // Adds space above the text
 
+    const h2 = document.createElement('h2');
+    h2.textContent = profile[0];
+
+    const p = document.createElement('p');
+    p.textContent = "Do we want to have short descriptions? I think it could be cool";
+
+    const socialLinks = document.createElement('div');
+    socialLinks.className = 'social-links';
+    socialLinks.style.marginTop = '10px'; // Adds space between description and links
+
+    if(profile[2] !="BLANK"){
       const linkedinLink = document.createElement('a');
       linkedinLink.href = profile[2];
       linkedinLink.className = 'w3-btn w3-theme-light';
       linkedinLink.target = '_blank';
-      linkedinLink.innerHTML = '<i class="fa fa-linkedin"></i> LinkedIn';
-
-      const cvLink = document.createElement('a');
-      cvLink.href =`student_data/cv/${profile[1]}.pdf`;
-      cvLink.className = 'w3-btn w3-theme-light';
-      cvLink.target = '_blank';
-      cvLink.innerHTML = '<i class="fa fa-address-card"></i> CV';
-
+      linkedinLink.innerHTML = '<i class="fa fa-linkedin-square"></i> LinkedIn';
       socialLinks.appendChild(linkedinLink);
-      socialLinks.appendChild(cvLink);
-
-      content.appendChild(h2);
-      content.appendChild(p);
-      content.appendChild(socialLinks);
-
-      container.appendChild(img);
-      container.appendChild(content);
-
-      return container;
     }
+
+    const cvLink = document.createElement('a');
+    cvLink.href = `student_data/cv/${profile[1]}.pdf`;
+    cvLink.className = 'w3-btn w3-theme-light';
+    cvLink.target = '_blank';
+    cvLink.innerHTML = '<i class="fa fa-file-pdf-o"></i> CV';
+
+
+    socialLinks.appendChild(cvLink);
+
+    content.appendChild(h2);
+    content.appendChild(p);
+    content.appendChild(socialLinks);
+
+    container.appendChild(imgWrapper); // Append imgWrapper instead of img directly
+    container.appendChild(content);
+
+    return container;
+}
+
+
     
     // Function to fetch profiles and display them
     async function loadProfiles() {
     const fileUrl = "student_data/student_data.csv";
     
-    try {
         // Fetch the CSV file
         const response = await fetch(fileUrl);
         
@@ -189,24 +212,30 @@
         }
         
         // Read the text from the response
-        const text = await response.text();
-        
-        // Process the CSV text
-        const students = processCSV(text);
-        const profilesContainer = document.getElementById('profiles-container');
-        // Create profile containers for each student
-        for (const student of students) {
-            let studentProfile = createProfileContainer(student);
+        fetch('student_data/student_data.csv')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.text();
+        })
+        .then((data) => {
+          console.log(data);  // Output the CSV content to the console
+          const students = processCSV(data);  // Process the CSV content
+          const profilesContainer = document.getElementById('profiles-container');
+          students.forEach(student => {
+            const studentProfile = createProfileContainer(student);
             profilesContainer.appendChild(studentProfile);
-        }
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-    }
+          });
+        })
+        .catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
     function processCSV(csvText) {
     // Split the CSV text by lines
-    const lines = csvText.split('\n');
+    const lines = csvText.split(/\r?\n/);
     
     // Skip the header (first line)
     const dataLines = lines.slice(1);
@@ -224,6 +253,23 @@
 }
     // Load profiles on page load
     window.addEventListener('DOMContentLoaded', loadProfiles);
+
+    function fileExists(url) {
+    return fetch(url, { method: 'HEAD' })
+        .then(response => {
+            if (response.ok) {
+                // File exists (status 200)
+                return true;
+            } else {
+                // File doesn't exist (status 404 or other)
+                return false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return false;
+        });
+}
 
 // Side navigation
 function w3_open() {
