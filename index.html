@@ -196,7 +196,8 @@
         
         // Create profile containers for each student
         for (const student of students) {
-            createProfileContainer(student);
+            let studentProfile = createProfileContainer(student);
+            profilesContainer.appendChild(studentProfile);
         }
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
