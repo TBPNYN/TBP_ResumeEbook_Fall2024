@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Tau Beta Pi NU Resume E-Book</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tau Beta Pi NU Resume E-Book</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+  <style>
     .circle-image {
       width: 200px;
       height: 200px;
       border-radius: 50%;
       object-fit: cover;
     }
+
     .container {
       display: flex;
       align-items: center;
@@ -37,7 +38,6 @@
       height: 150px;
       border-radius: 50%;
       object-fit: cover;
-     
     }
 
     .content {
@@ -63,48 +63,42 @@
       border-radius: 5px;
     }
 
-    .social-links .ub { background-color: #3b5998; }
-    .social-links .twitter { background-color: #1da1f2; }
-    .social-links .instagram { background-color: #e4405f; }
     .social-links .linkedin { background-color: #0077b5; }
 
     .social-links a:hover {
       opacity: 0.8;
     }
+
+    /* Reserve space for profiles before they load */
+    #profiles-container {
+      min-height: 600px; /* Adjust height as needed */
+      transition: min-height 0.5s ease; /* Smooth removal of height */
+    }
   </style>
 </head>
 <body>
 
-<!-- Side Navigation -->
-<!-- <nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-center" style="display:none" id="mySidebar">
-  <h1 class="w3-xxxlarge w3-text-theme">Side Navigation</h1>
-  <button class="w3-bar-item w3-button" onclick="w3_close()">Close <i class="fa fa-remove"></i></button>
-  <a href="#" class="w3-bar-item w3-button">Link 1</a>
-  <a href="#" class="w3-bar-item w3-button">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button">Link 3</a>
-  <a href="#" class="w3-bar-item w3-button">Link 4</a>
-</nav> -->
-
 <!-- Header -->
 <header class="w3-container w3-indigo w3-padding" id="myHeader">
   <div class="w3-center">
-   <div class="circle-background">
-      <img src="assets/logo.png" alt="TBP Logo" class="circle-image">
+    <div class="circle-background">
+      <img src="assets/logo.png" alt="TBP Logo" class="circle-image" loading="lazy">
     </div>
-  <h2>Tau Beta Pi Nu</h2>
-  <h1 class="w3-xxxlarge w3-animate-bottom">Resume E-Book</h1>
+    <h2>Tau Beta Pi Nu</h2>
+    <h1 class="w3-xxxlarge">Resume E-Book</h1>
   </div>
 </header>
 
-  <div id="profiles-container"></div>
+<!-- Profiles Section -->
+<div id="profiles-container"></div>
 
 <!-- Footer -->
 <footer class="w3-container w3-indigo w3-padding-16">
-<h3>Learn more about our organization <a href="https://www.tbp.org/recruit/recruitHome.cfm">here</a></h3>
+  <h3>Learn more about our organization <a href="https://www.tbp.org/recruit/recruitHome.cfm">here</a></h3>
   <div style="position:relative;bottom:55px;" class="w3-tooltip w3-right">
-    <span class="w3-text w3-theme-light w3-padding">Go To Top</span>    
+    <span class="w3-text w3-theme-light w3-padding">Go To Top</span>
     <a class="w3-text-white" href="#myHeader"><span class="w3-xlarge">
-    <i class="fa fa-chevron-circle-up"></i></span></a>
+      <i class="fa fa-chevron-circle-up"></i></span></a>
   </div>
   <p>Check our socials! 
     <a href="https://engineering.buffalo.edu/home/academics/beyond/clubs.host.html/content/shared/engineering/school-wide-content/clubs/seas/tau-beta-pi.detail.html" class="w3-btn w3-theme-light" target="_blank">
@@ -119,56 +113,46 @@
   </p>
 </footer>
 
-<!-- Script for Sidebar, Tabs, Accordions, Progress bars and slideshows -->
+<!-- Script for creating and displaying profiles -->
 <script>
-
-    // Function to create a profile container
-    function createProfileContainer(profile) {
+  // Function to create a profile container
+  function createProfileContainer(profile) {
     const container = document.createElement('div');
     container.className = 'container';
 
     const imgWrapper = document.createElement('div');
-    imgWrapper.className = 'circle-background'; // CSS class for the white circle background
-    imgWrapper.style.marginBottom = '20px'; // Adds space between the image and text
+    imgWrapper.className = 'circle-background';
 
     const img = document.createElement('img');
-    img.src = 'assets/logo.png'; // Default image (e.g., a placeholder image)
     img.alt = `${profile[0]}'s Profile Image`;
-    img.className = 'circle-image'; // CSS class for making the image circular
+    img.className = 'circle-image';
+    img.loading = 'lazy';
 
-    // Check if the profile image exists
-    const imagePathPng = `student_data/image/${profile[1]}.png`;
-    fileExists(imagePathPng).then(exists => {
-        if (exists) {
-            img.src = imagePathPng; // If PNG image exists, use it
-        } else {
-            // If PNG doesn't exist, check for JPEG
-            const imagePathJpeg = `student_data/image/${profile[1]}.jpeg`;
-            fileExists(imagePathJpeg).then(exists => {
-                if (exists) {
-                    img.src = imagePathJpeg; // If JPEG image exists, use it
-                }
-            });
-        }
-    });
+    // Set the image source and handle error
+    img.src = `student_data/image/${profile[1]}.png`;
+
+    img.onerror = function() {
+      img.src = `student_data/image/${profile[1]}.jpeg`;
+      img.onerror = function() {
+        img.src = 'assets/logo.png'; // Default image if both fail
+      }
+    };
 
     imgWrapper.appendChild(img);
 
     const content = document.createElement('div');
     content.className = 'content';
-    content.style.marginTop = '20px'; // Adds space above the text
 
     const h2 = document.createElement('h2');
     h2.textContent = profile[0];
 
     const p = document.createElement('p');
-    p.textContent = "Do we want to have short descriptions? I think it could be cool";
+    p.textContent = profile[3] || "Short description goes here."; // Assuming profile[3] contains the description
 
     const socialLinks = document.createElement('div');
     socialLinks.className = 'social-links';
-    socialLinks.style.marginTop = '10px'; // Adds space between description and links
 
-    if(profile[2] !="BLANK"){
+    if(profile[2] && profile[2] !== "BLANK"){
       const linkedinLink = document.createElement('a');
       linkedinLink.href = profile[2];
       linkedinLink.className = 'w3-btn w3-theme-light';
@@ -183,168 +167,56 @@
     cvLink.target = '_blank';
     cvLink.innerHTML = '<i class="fa fa-file-pdf-o"></i> CV';
 
-
     socialLinks.appendChild(cvLink);
 
     content.appendChild(h2);
     content.appendChild(p);
     content.appendChild(socialLinks);
 
-    container.appendChild(imgWrapper); // Append imgWrapper instead of img directly
+    container.appendChild(imgWrapper);
     container.appendChild(content);
 
     return container;
-}
+  }
 
-
-    
-    // Function to fetch profiles and display them
-    async function loadProfiles() {
+  // Function to fetch and display profiles
+  function loadProfiles() {
     const fileUrl = "student_data/student_data.csv";
     
-        // Fetch the CSV file
-        const response = await fetch(fileUrl);
-        
-        // Check if the request was successful
+    fetch(fileUrl)
+      .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+          throw new Error('Network response was not ok');
         }
-        
-        // Read the text from the response
-        fetch('student_data/student_data.csv')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.text();
-        })
-        .then((data) => {
-          console.log(data);  // Output the CSV content to the console
-          const students = processCSV(data);  // Process the CSV content
-          const profilesContainer = document.getElementById('profiles-container');
-          students.forEach(student => {
-            const studentProfile = createProfileContainer(student);
-            profilesContainer.appendChild(studentProfile);
-          });
-        })
-        .catch((error) => {
-          console.error('There was a problem with the fetch operation:', error);
-        });
-}
+        return response.text();
+      })
+      .then((data) => {
+        const students = processCSV(data);
+        const profilesContainer = document.getElementById('profiles-container');
 
-    function processCSV(csvText) {
-    // Split the CSV text by lines
+        students.forEach(student => {
+          const studentProfile = createProfileContainer(student);
+          profilesContainer.appendChild(studentProfile);
+        });
+
+        // Remove the reserved space after loading profiles
+        profilesContainer.style.minHeight = '0';
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
+
+  // Function to process CSV
+  function processCSV(csvText) {
     const lines = csvText.split(/\r?\n/);
-    
-    // Skip the header (first line)
     const dataLines = lines.slice(1);
     
-    // Process each line
-    const dataArrays = dataLines.map(line => {
-        // Split the line by commas to get the array of strings
-        return line.split(',').map(item => item.trim());
-    });
-
-    // Remove any empty arrays that might result from extra newlines
-    const filteredData = dataArrays.filter(row => row.length > 1);
-  
-    return filteredData;
-}
-    // Load profiles on page load
-    window.addEventListener('DOMContentLoaded', loadProfiles);
-
-    function fileExists(url) {
-    return fetch(url, { method: 'HEAD' })
-        .then(response => {
-            if (response.ok) {
-                // File exists (status 200)
-                return true;
-            } else {
-                // File doesn't exist (status 404 or other)
-                return false;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            return false;
-        });
-}
-
-// Side navigation
-function w3_open() {
-  var x = document.getElementById("mySidebar");
-  x.style.width = "100%";
-  x.style.fontSize = "40px";
-  x.style.paddingTop = "10%";
-  x.style.display = "block";
-}
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-
-// Tabs
-function openCity(evt, cityName) {
-  var i;
-  var x = document.getElementsByClassName("city");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
+    return dataLines.map(line => line.split(',').map(item => item.trim())).filter(row => row.length > 1);
   }
-  var activebtn = document.getElementsByClassName("testbtn");
-  for (i = 0; i < x.length; i++) {
-    activebtn[i].className = activebtn[i].className.replace(" w3-dark-grey", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " w3-dark-grey";
-}
 
-var mybtn = document.getElementsByClassName("testbtn")[0];
-mybtn.click();
-
-// Accordions
-function myAccFunc(id) {
-  var x = document.getElementById(id);
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
-
-// Slideshows
-var slideIndex = 1;
-
-function plusDivs(n) {
-  slideIndex = slideIndex + n;
-  showDivs(slideIndex);
-}
-
-function showDivs(n) {
-  var x = document.getElementsByClassName("mySlides");
-  if (n > x.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = x.length} ;
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
-  }
-  x[slideIndex-1].style.display = "block";  
-}
-
-showDivs(1);
-
-// Progress Bars
-function move() {
-  var elem = document.getElementById("myBar");   
-  var width = 5;
-  var id = setInterval(frame, 10);
-  function frame() {
-    if (width == 100) {
-      clearInterval(id);
-    } else {
-      width++; 
-      elem.style.width = width + '%'; 
-      elem.innerHTML = width * 1  + '%';
-    }
-  }
-}
+  // Load profiles on page load
+  window.addEventListener('DOMContentLoaded', loadProfiles);
 </script>
 
 </body>
