@@ -78,13 +78,13 @@
 
     /* Centering the profiles within the parent container */
     #profiles-container {
+      min-height: 400px; /* Reserve space before profiles load */
+      transition: min-height 0.5s ease; /* Smooth transition when space is removed */
       display: flex; /* Make profiles a flex container */
       flex-wrap: wrap; /* Allow wrapping for smaller screens */
       justify-content: center; /* Center the profiles */
       gap: 20px; /* Optional: Add spacing between profiles */
     }
-
-
 
     /* Adjust the button container to align right */
     .button-container {
@@ -139,7 +139,7 @@
 
 <!-- Footer -->
 <footer class="w3-container w3-indigo w3-padding-16">
-  <h3>Learn more about our organization <a href="https://www.tbp.org/recruit/recruitHome.cfm">here</a></h3>
+  <h3>Learn more about our organization <a href="https://www.tbp.org/">here</a></h3>
   <div style="position:relative;bottom:55px;" class="w3-tooltip w3-right">
     <span class="w3-text w3-theme-light w3-padding">Go To Top</span>
     <a class="w3-text-white" href="#myHeader"><span class="w3-xlarge">
