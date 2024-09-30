@@ -89,6 +89,34 @@
   </div>
 </header>
 
+<div class="w3-container w3-padding w3-center">
+  <div class="w3-row-padding w3-center" style="display: inline-block; max-width: 100%;">
+    <!-- Dropdown for selecting search category -->
+    <div class="w3-col s12 m6 l6">
+      <label for="search-category">Search by:</label>
+      <select class="w3-select" id="search-category">
+        <option value="ALL">ALL</option>
+        <option value="Aerospace Engineering">Aerospace Engineering</option>
+        <option value="Biomedical Engineering">Biomedical Engineering</option>
+        <option value="Chemical Engineering">Chemical Engineering</option>
+        <option value="Civil Engineering">Civil Engineering</option>
+        <option value="Computer Engineering">Computer Engineering</option>
+        <option value="Computer">Computer Science</option>
+        <option value="Electrical Engineering">Electrical Engineering</option>
+        <option value="Environmental Engineering">Environmental Engineering</option>
+        <option value="Materials Engineering">Materials Engineering</option>
+        <option value="Mechanical Engineering">Mechanical Engineering</option>
+      </select>
+    </div>
+
+    <!-- Search button -->
+    <div class="w3-col s12 m6 l6">
+      <label>&nbsp;</label> <!-- Empty label for spacing -->
+      <button class="w3-button w3-indigo w3-block" id="search-button">Search</button>
+    </div>
+  </div>
+</div>
+
 <!-- Profiles Section -->
 <div id="profiles-container"></div>
 
@@ -115,74 +143,115 @@
 
 <!-- Script for creating and displaying profiles -->
 <script>
-  // Function to create a profile container
+  // Global variable to store parsed student data
+  let studentData = [];
+
   function createProfileContainer(profile) {
-    const container = document.createElement('div');
-    container.className = 'container';
+  const container = document.createElement('div');
+  container.className = 'container w3-card w3-padding w3-margin-bottom'; // Adding card styling and padding
 
-    const imgWrapper = document.createElement('div');
-    imgWrapper.className = 'circle-background';
+  // Profile content container with flexbox
+  const content = document.createElement('div');
+  content.className = 'w3-content'; // Default to left alignment
 
-    const img = document.createElement('img');
-    img.alt = `${profile[0]}'s Profile Image`;
-    img.className = 'circle-image';
-    img.loading = 'lazy';
+  // Create a flex container to align text and button on the same line
+  const profileRow = document.createElement('div');
+  profileRow.className = 'w3-row w3-align-items-center'; // Flex container to align items
 
-    // Set the image source and handle error
-    img.src = `student_data/image/${profile[1]}.png`;
+  // Text information container
+  const textInfo = document.createElement('div');
+  textInfo.className = 'w3-col'; // Allow this div to take the available space
 
-    img.onerror = function() {
-      img.src = `student_data/image/${profile[1]}.jpeg`;
-      img.onerror = function() {
-        img.src = 'assets/logo.png'; // Default image if both fail
-      }
-    };
+  // 1st line: Name (left-aligned)
+  const name = document.createElement('h3');
+  name.textContent = `${profile['First Name']} ${profile['Last Name']}`;
+  name.className = 'w3-text-bold w3-margin-bottom'; // Bold and margin for spacing
 
-    imgWrapper.appendChild(img);
+  // 2nd line: Major (left-aligned)
+  const major = document.createElement('p');
+  major.textContent = profile['Major'] || "";
+  major.className = 'w3-margin-bottom'; // Adds some margin spacing
 
-    const content = document.createElement('div');
-    content.className = 'content';
+  // 3rd line: Status (left-aligned)
+  const status = document.createElement('p');
+  status.textContent = `${profile['Status'] || ""}`;
+  status.className = 'w3-text-gray w3-margin-bottom'; // Styled in gray with margin
 
-    const h2 = document.createElement('h2');
-    h2.textContent = profile[0];
+  // 4th line: Class (left-aligned)
+  const classInfo = document.createElement('p');
+  classInfo.textContent = `Class: ${profile['Class'] || ""}`;
+  classInfo.className = 'w3-text-gray w3-margin-bottom';
 
-    const p = document.createElement('p');
-    p.textContent = profile[3] || "Short description goes here."; // Assuming profile[3] contains the description
+  // 5th line: Graduation (Month Year)
+  const graduation = document.createElement('p');
+  graduation.textContent = `Graduation: ${profile['Grad Month'] || ""} ${profile['Grad Year'] || ""}`;
+  graduation.className = 'w3-text-gray w3-margin-bottom';
 
-    const socialLinks = document.createElement('div');
-    socialLinks.className = 'social-links';
+  // Append all text elements to the textInfo div
+  textInfo.appendChild(name);
+  textInfo.appendChild(major);
+  textInfo.appendChild(status);
+  textInfo.appendChild(classInfo);
+  textInfo.appendChild(graduation);
 
-    if(profile[2] && profile[2] !== "BLANK"){
-      const linkedinLink = document.createElement('a');
-      linkedinLink.href = profile[2];
-      linkedinLink.className = 'w3-btn w3-theme-light';
-      linkedinLink.target = '_blank';
-      linkedinLink.innerHTML = '<i class="fa fa-linkedin-square"></i> LinkedIn';
-      socialLinks.appendChild(linkedinLink);
-    }
+  // CV Button (right-aligned)
+  const socialLinks = document.createElement('div');
+  socialLinks.className = 'w3-col w3-right'; // Aligns the CV button to the right
 
-    const cvLink = document.createElement('a');
-    cvLink.href = `student_data/cv/${profile[1]}.pdf`;
-    cvLink.className = 'w3-btn w3-theme-light';
-    cvLink.target = '_blank';
-    cvLink.innerHTML = '<i class="fa fa-file-pdf-o"></i> CV';
+  const cvLink = document.createElement('a');
+  cvLink.href = profile['CV'];
+  cvLink.className = 'w3-btn w3-theme w3-large'; // Bigger button
+  cvLink.target = '_blank';
+  cvLink.innerHTML = '<i class="fa fa-file-pdf-o"></i> CV';
 
-    socialLinks.appendChild(cvLink);
+  socialLinks.appendChild(cvLink);
 
-    content.appendChild(h2);
-    content.appendChild(p);
-    content.appendChild(socialLinks);
+  // Append textInfo and socialLinks to the profileRow flex container
+  profileRow.appendChild(textInfo);
+  profileRow.appendChild(socialLinks);
 
-    container.appendChild(imgWrapper);
-    container.appendChild(content);
+  // Append the profileRow to content
+  content.appendChild(profileRow);
 
-    return container;
+  // Append content to container
+  container.appendChild(content);
+
+  return container;
+}
+  // Function to display profiles on the page
+  function displayProfiles(students) {
+    const profilesContainer = document.getElementById('profiles-container');
+    profilesContainer.innerHTML = ''; // Clear existing profiles
+
+    students.forEach(student => {
+      const studentProfile = createProfileContainer(student);
+      profilesContainer.appendChild(studentProfile);
+    });
+
+    profilesContainer.style.minHeight = '0'; // Remove reserved space after loading profiles
   }
 
-  // Function to fetch and display profiles
+  // Function to load all profiles
+  function loadAllProfiles() {
+    displayProfiles(studentData); // Load all profiles
+  }
+
+  // Function to filter and load profiles by Major
+  function loadByMajor(major) {
+  // Convert search term and student major to lowercase for case-insensitive comparison
+  const filteredStudents = studentData.filter(student => 
+    student.Major.toLowerCase().includes(major.toLowerCase())
+  );
+
+  // Call the function to display the filtered profiles
+  displayProfiles(filteredStudents);
+}
+
+
+  // Function to fetch and parse the CSV data
   function loadProfiles() {
-    const fileUrl = "student_data/student_data.csv";
-    
+    const fileUrl = "student_data.csv";
+
     fetch(fileUrl)
       .then(response => {
         if (!response.ok) {
@@ -191,29 +260,37 @@
         return response.text();
       })
       .then((data) => {
-        const students = processCSV(data);
-        const profilesContainer = document.getElementById('profiles-container');
-
-        students.forEach(student => {
-          const studentProfile = createProfileContainer(student);
-          profilesContainer.appendChild(studentProfile);
-        });
-
-        // Remove the reserved space after loading profiles
-        profilesContainer.style.minHeight = '0';
+        studentData = processCSV(data); // Store parsed student data in global variable
+        loadAllProfiles(); // Load all profiles initially
       })
       .catch((error) => {
         console.error('There was a problem with the fetch operation:', error);
       });
   }
 
-  // Function to process CSV
+  // Function to process CSV and convert to an array of objects
   function processCSV(csvText) {
     const lines = csvText.split(/\r?\n/);
+    const headers = lines[0].split(',').map(header => header.trim());
     const dataLines = lines.slice(1);
-    
-    return dataLines.map(line => line.split(',').map(item => item.trim())).filter(row => row.length > 1);
+
+    return dataLines.map(line => {
+      const items = line.split(',').map(item => item.trim());
+      const student = {};
+      headers.forEach((header, index) => {
+        student[header] = items[index] || '';
+      });
+      return student;
+    }).filter(student => Object.keys(student).length > 1); // Filter out empty rows
   }
+
+  // Add event listener to the search button
+  document.getElementById('search-button').addEventListener('click', function() {
+    // Get the selected value from the dropdown
+    const selectedCategory = document.getElementById('search-category').value;
+    // Call a function and pass the selected category
+    loadByMajor(selectedCategory)
+  });
 
   // Load profiles on page load
   window.addEventListener('DOMContentLoaded', loadProfiles);
