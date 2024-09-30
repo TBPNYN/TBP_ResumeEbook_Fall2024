@@ -17,7 +17,8 @@
 
     .container {
       display: flex;
-      align-items: center;
+      align-items: center; /* Align items vertically */
+      justify-content: space-between; /* Space out items */
       padding: 10px;
       background-color: #f4f4f4;
       border-radius: 8px;
@@ -70,9 +71,25 @@
     }
 
     /* Reserve space for profiles before they load */
+/* Adjust the profile container's width */
+    .profile-container {
+      width: 600px; /* Increased width for larger profile display */
+    }
+
+    /* Centering the profiles within the parent container */
     #profiles-container {
-      min-height: 600px; /* Adjust height as needed */
-      transition: min-height 0.5s ease; /* Smooth removal of height */
+      display: flex; /* Make profiles a flex container */
+      flex-wrap: wrap; /* Allow wrapping for smaller screens */
+      justify-content: center; /* Center the profiles */
+      gap: 20px; /* Optional: Add spacing between profiles */
+    }
+
+
+
+    /* Adjust the button container to align right */
+    .button-container {
+      display: flex;
+      justify-content: flex-end; /* Align button to the right */
     }
   </style>
 </head>
@@ -132,7 +149,7 @@
     <a href="https://engineering.buffalo.edu/home/academics/beyond/clubs.host.html/content/shared/engineering/school-wide-content/clubs/seas/tau-beta-pi.detail.html" class="w3-btn w3-theme-light" target="_blank">
       <i class="fa fa-graduation-cap"></i> UB Site
     </a>
-    <a href="https://www.tbp-ny.nu/" class="w3-btn w3-theme-light" target="_blank">
+    <a href="https://tbpnyn.square.site/" class="w3-btn w3-theme-light" target="_blank">
       <i class="fa fa-info"></i> TBP Website
     </a>
     <a href="https://www.instagram.com/taubetapiub/" class="w3-btn w3-theme-light" target="_blank">
@@ -146,57 +163,44 @@
   // Global variable to store parsed student data
   let studentData = [];
 
-  function createProfileContainer(profile) {
+// Function to create a profile container
+function createProfileContainer(profile) {
   const container = document.createElement('div');
-  container.className = 'container w3-card w3-padding w3-margin-bottom'; // Adding card styling and padding
+  container.className = 'container w3-card w3-padding w3-margin-bottom'; // Adding some card styling and padding
+  container.style.width = '400px'; // Set a wider fixed width for the container
 
-  // Profile content container with flexbox
+  // Profile content container
   const content = document.createElement('div');
-  content.className = 'w3-content'; // Default to left alignment
+  content.className = 'w3-content';
 
-  // Create a flex container to align text and button on the same line
-  const profileRow = document.createElement('div');
-  profileRow.className = 'w3-row w3-align-items-center'; // Flex container to align items
-
-  // Text information container
-  const textInfo = document.createElement('div');
-  textInfo.className = 'w3-col'; // Allow this div to take the available space
-
-  // 1st line: Name (left-aligned)
+  // 1st line: Name
   const name = document.createElement('h3');
   name.textContent = `${profile['First Name']} ${profile['Last Name']}`;
-  name.className = 'w3-text-bold w3-margin-bottom'; // Bold and margin for spacing
+  name.className = 'w3-text-bold w3-left-align'; // Left-aligned name
 
-  // 2nd line: Major (left-aligned)
-  const major = document.createElement('p');
-  major.textContent = profile['Major'] || "";
-  major.className = 'w3-margin-bottom'; // Adds some margin spacing
+  // 2nd line: Major (on a new line, slightly bigger)
+  const major = document.createElement('h4'); // Use <h4> for slightly bigger text
+  major.textContent = `${profile['Major'] || ""}`;
+  major.className = 'w3-text-bold w3-left-align'; // Left-aligned major
 
-  // 3rd line: Status (left-aligned)
+  // 3rd line: Status
   const status = document.createElement('p');
   status.textContent = `${profile['Status'] || ""}`;
-  status.className = 'w3-text-gray w3-margin-bottom'; // Styled in gray with margin
+  status.className = 'w3-text-gray w3-left-align'; // Left-aligned status
 
-  // 4th line: Class (left-aligned)
+  // 4th line: Class
   const classInfo = document.createElement('p');
   classInfo.textContent = `Class: ${profile['Class'] || ""}`;
-  classInfo.className = 'w3-text-gray w3-margin-bottom';
+  classInfo.className = 'w3-text-gray w3-left-align'; // Left-aligned class
 
-  // 5th line: Graduation (Month Year)
-  const graduation = document.createElement('p');
-  graduation.textContent = `Graduation: ${profile['Grad Month'] || ""} ${profile['Grad Year'] || ""}`;
-  graduation.className = 'w3-text-gray w3-margin-bottom';
+  // 5th line: Grad Year - Grad Month
+  const gradInfo = document.createElement('p');
+  gradInfo.textContent = `Graduation: ${profile['Grad Year'] || ""} ${profile['Grad Month'] || ""}`;
+  gradInfo.className = 'w3-text-gray w3-left-align'; // Left-aligned graduation info
 
-  // Append all text elements to the textInfo div
-  textInfo.appendChild(name);
-  textInfo.appendChild(major);
-  textInfo.appendChild(status);
-  textInfo.appendChild(classInfo);
-  textInfo.appendChild(graduation);
-
-  // CV Button (right-aligned)
+  // CV Button (right-aligned, bigger)
   const socialLinks = document.createElement('div');
-  socialLinks.className = 'w3-col w3-right'; // Aligns the CV button to the right
+  socialLinks.className = 'w3-right w3-margin-top'; // Aligns the CV button to the right
 
   const cvLink = document.createElement('a');
   cvLink.href = profile['CV'];
@@ -206,18 +210,25 @@
 
   socialLinks.appendChild(cvLink);
 
-  // Append textInfo and socialLinks to the profileRow flex container
-  profileRow.appendChild(textInfo);
-  profileRow.appendChild(socialLinks);
+  // Append all elements to content
+  content.appendChild(name);
+  content.appendChild(major); // Append the major on a new line
+  content.appendChild(status);
+  content.appendChild(classInfo); // Append class info on a new line
+  content.appendChild(gradInfo); // Append grad info on a new line
+  content.appendChild(socialLinks);
 
-  // Append the profileRow to content
-  content.appendChild(profileRow);
+  // Set the width of the content to match the container
+  content.style.width = '100%'; // Make content take full width of the container
+  content.style.boxSizing = 'border-box'; // Ensure padding and borders are included in the element's total width
 
   // Append content to container
   container.appendChild(content);
 
   return container;
 }
+
+
   // Function to display profiles on the page
   function displayProfiles(students) {
     const profilesContainer = document.getElementById('profiles-container');
@@ -289,7 +300,12 @@
     // Get the selected value from the dropdown
     const selectedCategory = document.getElementById('search-category').value;
     // Call a function and pass the selected category
-    loadByMajor(selectedCategory)
+    if (selectedCategory == "ALL"){
+      loadAllProfiles();
+    }
+    else{
+      loadByMajor(selectedCategory);
+    }
   });
 
   // Load profiles on page load
