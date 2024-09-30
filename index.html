@@ -164,6 +164,7 @@
   let studentData = [];
 
 // Function to create a profile container
+// Function to create a profile container
 function createProfileContainer(profile) {
   const container = document.createElement('div');
   container.className = 'container w3-card w3-padding w3-margin-bottom'; // Adding some card styling and padding
@@ -198,17 +199,32 @@ function createProfileContainer(profile) {
   gradInfo.textContent = `Graduation: ${profile['Grad Year'] || ""} ${profile['Grad Month'] || ""}`;
   gradInfo.className = 'w3-text-gray w3-left-align'; // Left-aligned graduation info
 
-  // CV Button (right-aligned, bigger)
+  // Social Links container
   const socialLinks = document.createElement('div');
-  socialLinks.className = 'w3-right w3-margin-top'; // Aligns the CV button to the right
+  socialLinks.className = 'w3-right w3-margin-top'; // Aligns the buttons to the right
 
+  // CV Button (right-aligned, bigger)
   const cvLink = document.createElement('a');
   cvLink.href = profile['CV'];
   cvLink.className = 'w3-btn w3-theme w3-large'; // Bigger button
   cvLink.target = '_blank';
   cvLink.innerHTML = '<i class="fa fa-file-pdf-o"></i> CV';
-
   socialLinks.appendChild(cvLink);
+
+  // Check if LinkedIn URL exists and create LinkedIn button
+  if (profile['LinkedIn']) {
+    // Ensure the LinkedIn URL is absolute by checking if it starts with 'http' or 'https'
+    let linkedInUrl = profile['LinkedIn'];
+    if (!linkedInUrl.startsWith('http://') && !linkedInUrl.startsWith('https://')) {
+    linkedInUrl = 'https://' + linkedInUrl;
+    }
+    const linkedInLink = document.createElement('a');
+    linkedInLink.href = linkedInUrl;
+    linkedInLink.className = 'w3-btn w3-theme w3-large w3-margin-left'; // Styling for LinkedIn button
+    linkedInLink.target = '_blank';
+    linkedInLink.innerHTML = '<i class="fa fa-linkedin-square"></i>';
+    socialLinks.appendChild(linkedInLink); // Add LinkedIn button next to CV button
+  }
 
   // Append all elements to content
   content.appendChild(name);
@@ -227,7 +243,6 @@ function createProfileContainer(profile) {
 
   return container;
 }
-
 
   // Function to display profiles on the page
   function displayProfiles(students) {
